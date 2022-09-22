@@ -17,4 +17,4 @@ For start aplication you will need `nodejs` and `Expo` installed.
 - On root repository run `expo install` for install node modules;
 - run `expo start` to start dev aplication.
 
-you can run with a simulator or a physic device if that has expo installed [Expo go](https://expo.dev/client) installed.
+you can run with a simulator or a physic device if that has [Expo go](https://expo.dev/client) installed.
