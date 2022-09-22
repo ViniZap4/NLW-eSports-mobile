@@ -1,6 +1,8 @@
+import { useEffect, useRef } from 'react';
 
 import { StatusBar } from 'react-native';
 import { Background } from './src/components/Background';
+import * as Notifications from "expo-notifications";
 
 import { 
   useFonts,
@@ -14,7 +16,36 @@ import { Home } from './src/screens/Home';
 import {Routes} from './src/routes';
 import {Loading} from './src/components/Loading';
 
+import './src/services/notificationConfig'
+import { getPushNotificationToken } from './src/services/getPushNotificationToken'
+import { Subscription } from 'expo-modules-core';
+
+
 export default function App() {
+
+  const getNotificationListener = useRef<Subscription>()
+  const responseNotificationListener = useRef<Subscription>()
+  
+  useEffect(()=>{
+    getPushNotificationToken()
+  }, [])
+
+  useEffect(()=>{
+    getNotificationListener.current = Notifications.addNotificationReceivedListener(Notifications =>{
+      
+    })
+    responseNotificationListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+
+    })
+
+    return () =>{
+      if(getNotificationListener.current && responseNotificationListener.current){
+        Notifications.removeNotificationSubscription(getNotificationListener.current)
+        Notifications.removeNotificationSubscription(responseNotificationListener.current)
+      }
+    }
+  }, [])
+
   const [fontsLoaded ] = useFonts({
     Inter_400Regular,
     Inter_600SemiBold,
@@ -23,6 +54,7 @@ export default function App() {
   })
 
   return (
+    
     <Background>
       <StatusBar
         barStyle='light-content'
