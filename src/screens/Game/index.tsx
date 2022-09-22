@@ -13,7 +13,7 @@ import logoImg from '../../assets/logo-nlw-esports.png'
 import { Heading } from '../../components/Heading';
 import { DuoCard, DuoCardProps} from '../../components/DuoCard';
 import { useEffect, useState } from 'react';
-
+import {DuoMatch} from "../../components/DuoMatch"
 
 export function Game() {
   const route = useRoute();
@@ -22,6 +22,7 @@ export function Game() {
   const navigation = useNavigation();
   
   const [duos, setDuos] = useState<DuoCardProps[]>([])
+  const [dicordDuoSelected, setDicordDuoSelected] = useState('')
 
   useEffect(()=>{
     fetch(`http://192.168.15.58:3333/games/${game.id}/ads`)
@@ -34,6 +35,14 @@ export function Game() {
   function handleGoBack() {
     navigation.goBack();
   }
+
+  async function getDiscordUser(adsId: string){
+    fetch(`http://192.168.15.58:3333/ads/${adsId}/discord`)
+    .then(response => response.json())
+    .then(data => setDicordDuoSelected(data.discord))
+    
+  }
+
   return (
     <Background>
       <SafeAreaView style={styles.container}>
@@ -69,7 +78,7 @@ export function Game() {
           data={duos}
           keyExtractor={item => item.id}
           renderItem={({item}) =>(
-            <DuoCard data={item} onConnect={()=> {}} />
+            <DuoCard data={item} onConnect={()=> {getDiscordUser(item.id)}} />
           )}
 
           horizontal
@@ -83,9 +92,16 @@ export function Game() {
               Não há anúncios publicados para esse jogo ainda.
             </Text>
           )}
-
         />
 
+
+        
+        <DuoMatch 
+          discord={dicordDuoSelected}
+          visible={dicordDuoSelected.length>0}
+          onClose={()=> setDicordDuoSelected('')}
+
+        />
       </SafeAreaView>
     </Background>
   );
